@@ -108,21 +108,21 @@ class MediaController extends Controller
             // Save the uploaded file to the directory and store information about the file
             // into the database
             try {
-                $filePath = $this->storeFile($file, $fileName);
+                $pathToTheFile = $this->storeFile($file);
 
                 $newMedia = new Media();
                 $newMedia->title =          $data['title'];
                 $newMedia->description =    $data['description'];
                 $newMedia->file_type =      $fileType;
                 $newMedia->file_size =      $fileSize;
-                $newMedia->file_path =      $filePath;
+                $newMedia->file_path =      $pathToTheFile;
                 $newMedia->save();
 
                 $fileData = [
                     'fileName' => $fileName,
                     'fileType' => $fileType,
                     'fileSize' => $fileSize,
-                    'filePath' => $filePath,
+                    'filePath' => $pathToTheFile,
                 ];
 
                 array_push($this->filesSuccessfullyUploaded, $fileData);
@@ -154,10 +154,11 @@ class MediaController extends Controller
     }
 
 
-    private function storeFile($file, string $fileName)
+    private function storeFile($file)
     {
-        Storage::disk('local')->put("{$this->uploadDir}/{$fileName}", file_get_contents($file));
+        $filePath = Storage::disk('local')->putFile($this->uploadDir, $file);
+        $fullPath = "storage/{$filePath}";
 
-        return "storage/{$this->uploadDir}/{$fileName}";
+        return $fullPath;
     }
 }
