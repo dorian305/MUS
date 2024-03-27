@@ -26,7 +26,6 @@ class MediaController extends Controller
         'title'         =>  'required',
         'description'   =>  'required',
         'file'          =>  'required',
-        'key'           =>  'required',
     ];
 
 
@@ -48,11 +47,11 @@ class MediaController extends Controller
     }
 
 
-    private function validateAPIKey($key)
+    private function validateAPIKey($apiKey)
     {
         $resultKeysObj = ApiKeys::where('endpoint', "/upload/media")->get();
         foreach ($resultKeysObj as $keyObj){
-            if (Hash::check($key, $keyObj->key)) return true;
+            if (Hash::check($apiKey, $keyObj->key)) return true;
         }
 
         return false;
@@ -65,6 +64,17 @@ class MediaController extends Controller
         // Retrieve all data from the request
         $data = $request->all();
 
+        // Validate API Key
+        $validKey = $this->validateAPIKey($request->header('apiKey'));
+        if (!$validKey){
+            $returnData = [
+                'error' => "Invalid key provided.",
+            ];
+    
+            return response()->json($returnData, 403);
+        }
+
+        // Validate required parameters
         $validationDetails = $this->validateRequest($data);
         if ($validationDetails['status'] === "error"){
             $returnData = [
@@ -75,14 +85,6 @@ class MediaController extends Controller
             return response()->json($returnData, 422);
         }
 
-        $validKey = $this->validateApiKey($data['key']);
-        if (!$validKey){
-            $returnData = [
-                'error' => "Invalid key provided.",
-            ];
-    
-            return response()->json($returnData, 403);
-        }
 
         // Iterate over each uploaded file
         foreach ($request->file('file') as $file){

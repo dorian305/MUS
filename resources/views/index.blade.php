@@ -13,37 +13,51 @@
         </div>
         <div>
             <label for="description">Description:</label>
-            <textarea name="description" id="description"></textarea>
+            <textarea name="description" id="description">
+            </textarea>
         </div>
         <div>
             <label for="media">Select Media:</label>
             <input type="file" name="file[]" id="file" multiple>
         </div>
-        <button type="button" onclick="submitForm()">Upload</button>
+        <button type="button" onclick="uploadMedia()">
+            Upload
+        </button>
     </form>
 
     <script>
-        function submitForm() {
-            var form = document.getElementById('uploadForm');
-            var formData = new FormData(form);
+        let apiKey = "";
 
-            formData.append('key', "9315d9b1cfd125fbe11f2fbd9590a756629d249c3a5809e77cf0d0a248481e386bafbde6a2e7e7efc7c034e9cb3a5fd29b84");
+        fetch("api/upload/generatekey", {
+            method: "GET",
+        })
+        .then(response => response.json())
+        .then(data => {
+            apiKey = data['key'];
+        });
 
-            // Make AJAX request
-            fetch('/api/upload/media', {
-                method: 'POST',
+        const uploadMedia = function(){
+            const form = document.querySelector("#uploadForm");
+            const formData = new FormData(form);
+
+            const options = {
+                method: "POST",
+                headers: {
+                    apiKey: apiKey,
+                },
                 body: formData,
-                
-            })
+            }
+
+            fetch("api/upload/media", options)
             .then(response => response.json())
             .then(data => {
-                console.log('Response:', data);
+                console.log(data);
+                // ...request has succeeded.
             })
             .catch(error => {
-                console.error('Error:', error);
+                // ...request has failed due to an error
             });
         }
-
     </script>
 </body>
 </html>

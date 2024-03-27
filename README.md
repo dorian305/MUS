@@ -1,66 +1,174 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Description
+This document provides information on the API.
+The API is created using Laravel framework. It is a private API, requiring a valid key in order to use it.
+The key can be obtained by making a request to another endpoint.
+It is designed to handle media uploads, requiring a title, description and a list of media files to be uploaded.
+Returns an array of files that were uploaded with their name, type, size and path, and also array of files that failed to upload with their name and the error why the upload failed.
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
 
-## About Laravel
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+# Endpoints
+## Api key generation
+- URL: `api/upload/generatekey`
+- Method: GET
+- Description:
+    - Generates a 100-character API key.
+- Response:
+    - JSON containing the generated key.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Learning Laravel
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Media upload
+- URL: `api/upload/media`
+- Method: POST
+- Description:
+    - Uploads media files to the backend storage.
+    - Allowed file types are: ['jpeg', 'jpg', 'png', 'gif', 'mp4', 'avi', 'mov', 'mkv']
+    - Stores title, description, type, size and path of the file to the table.
+    - Title and description are stored same for all uploaded files in the table
+    - Requires a valid API key.
+- Request parameters:
+    - title: Title of the media (string, required).
+    - description: Description of the media (string, required).
+    - file[]: Media file(s) to upload (array of files, required).
+    - apiKey: Valid api key which must be attached to the header of the request.
+- Response:
+    - Success:
+        - Status Code: 200
+        - JSON response containing information about successfully uploaded files and any files that were not uploaded due to errors.
+    - Errors:
+        - JSON response containing error message(s).
+        - Possible errors are:
+            - 422 (Invalid data, missing required parameters)
+            - Invalid api key provided
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Laravel Sponsors
+## How to generate api key
+- To generate an API key, make a GET request to `api/upload/generatekey`.
+- This endpoint will return a JSON response containing the generated key.
+- Store the key.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Usage
+```
+let apiKey = "";
 
-### Premium Partners
+fetch('/upload/generatekey', {
+    method: "GET",
+})
+.then(response => response.json())
+.then(data => {
+    apiKey = data['key'];
+});
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
 
-## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### How to upload media
+- Obtain a valid API key from the endpoint above.
+- Construct a `multipart/form-data` form with the required parameters as inputs.
+- Make a POST request to the `api/upload/media` endpoint using javascript and make sure to attach the API key to the head of the request.
 
-## Code of Conduct
+### Usage
+```
+<form id="uploadForm" enctype="multipart/form-data">
+    <div>
+        <label for="title">Title:</label>
+        <input type="text" name="title" id="title">
+    </div>
+    <div>
+        <label for="description">Description:</label>
+        <textarea name="description" id="description">
+        </textarea>
+    </div>
+    <div>
+        <label for="media">Select Media:</label>
+        <input type="file" name="file[]" id="file" multiple>
+    </div>
+    <button type="button" onclick="uploadMedia()">
+        Upload
+    </button>
+</form>
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+<script>
+    const uploadMedia = function(){
+        const form = document.querySelector("#uploadForm");
+        const formData = new FormData(form);
 
-## Security Vulnerabilities
+        const options = {
+            method: "POST",
+            headers: {
+                apiKey: 'yourApiKey',
+            },
+            body: formData,
+        }
+        fetch("api/upload/media", options)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            // ...request has succeeded.
+        })
+        .catch(error => {
+            // ...request has failed due to an error
+        });
+    }
+</script>
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
-## License
+### Response
+```
+All files successfully uploaded
+{
+    'filesUploaded': [
+        [
+            'fileName' => uploaded file name,
+            'fileType' => file type,
+            'fileSize' => file size,
+            'filePath' => path to the file,
+        ],
+        ...,
+        ...,
+    ],
+    'filesNotUploaded': [],
+};
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+Some files failed to upload
+{
+    'filesUploaded': [
+        [
+            'fileName' => uploaded file name,
+            'fileType' => file type,
+            'fileSize' => file size,
+            'filePath' => path to the file,
+        ],
+        ...,
+        ...,
+    ],
+    'filesNotUploaded': [
+        [
+            'fileName'  =>  $fileName,
+            'error'     =>  "An error occured while trying to upload the file: error that occured for that file",
+        ],
+        ...,
+        ...
+    ],
+    'error': "Some files couldn't be uploaded. Please check 'filesNotUploaded' for more information."
+}
+
+All files failed to upload
+{
+    'filesUploaded': [],
+    'filesNotUploaded': [
+        [
+            'fileName'  =>  $fileName,
+            'error'     =>  "An error occured while trying to upload the file: error that occured for that file",
+        ],
+        ...,
+        ...
+    ],
+    'error': "Some files couldn't be uploaded. Please check 'filesNotUploaded' for more information."
+}
+```
