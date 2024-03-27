@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Storage;
 class MediaController extends Controller
 {
     private $uploadDir = "media";
-    private $maxFileSize = 10; // In megabytes
     private $filesSuccessfullyUploaded = [];
     private $filesUnsuccessfullyUploaded = [];
     private $allowedFileTypes = [
@@ -105,7 +104,6 @@ class MediaController extends Controller
                 continue;
             };
 
-            // Implement allowed filesize check...
 
             // Save the uploaded file to the directory and store information about the file
             // into the database
