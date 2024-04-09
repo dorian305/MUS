@@ -6,6 +6,7 @@ use App\Models\ApiKeys;
 use App\Models\Media;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
@@ -56,7 +57,7 @@ class MediaController extends Controller
 
 
 
-    public function upload(Request $request)
+    public function upload(Request $request) : JsonResponse
     {
         // Retrieve all data from the request
         $data = $request->all();
@@ -148,11 +149,14 @@ class MediaController extends Controller
             $returnData['message'] = "Files uploaded successfully.";
         }
 
-        return response()->json($returnData, 200);
+        return new JsonResponse(
+            data: $returnData,
+            status: 200,
+        );
     }
 
 
-    private function storeFile($file)
+    private function storeFile($file) : String
     {
         $filePath = Storage::disk('local')->putFile($this->uploadDir, $file);
         $fullPath = "storage/{$filePath}";
