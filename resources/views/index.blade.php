@@ -26,15 +26,7 @@
     </form>
 
     <script>
-        let apiKey = "";
-
-        fetch("api/upload/generatekey", {
-            method: "GET",
-        })
-        .then(response => response.json())
-        .then(data => {
-            apiKey = data.key;
-        });
+        let apiKey = "3df3b40d4b990af768dd176a3262f2df8c1dadce7797988ba8d0c82b684f98667ec8fa99a31784be4399f5e5dae4980fb3ee";
 
         const uploadMedia = function(){
             const form = document.querySelector("#uploadForm");

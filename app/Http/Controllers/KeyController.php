@@ -17,7 +17,7 @@ class KeyController extends Controller
         // Store the generated key
         $newKey = new ApiKeys();
         $newKey->key = $hashedKey;
-        $newKey->endpoint = "/upload/media";
+        $newKey->endpoint = "api/upload/media";
         $newKey->save();
 
         return response()->json([

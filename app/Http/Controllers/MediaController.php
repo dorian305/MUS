@@ -10,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use App\Services\ValidateAPIKey;
 
 class MediaController extends Controller
 {
@@ -45,25 +46,13 @@ class MediaController extends Controller
     }
 
 
-    private function validateAPIKey(String $apiKey) : Bool
-    {
-        $resultKeysObj = ApiKeys::where("endpoint", "/upload/media")->get();
-        foreach ($resultKeysObj as $keyObj){
-            if (Hash::check($apiKey, $keyObj->key)) return true;
-        }
-
-        return false;
-    }
-
-
-
     public function upload(Request $request) : JsonResponse
     {
         // Retrieve all data from the request
         $data = $request->all();
 
         // Validate API Key
-        $validKey = $this->validateAPIKey($request->header('apiKey'));
+        $validKey = ValidateAPIKey::validate($request->header('apiKey'), "api/upload/media");
         if (!$validKey){
             $returnData = [
                 'error' => "Invalid key provided.",
