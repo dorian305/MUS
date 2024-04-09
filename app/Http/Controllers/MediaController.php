@@ -7,9 +7,7 @@ use App\Models\Media;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class MediaController extends Controller
@@ -29,7 +27,7 @@ class MediaController extends Controller
 
 
 
-    private function validateRequest($data)
+    private function validateRequest(Array $data) : Array
     {
         $details = [
             'status'    =>  "success",
@@ -46,7 +44,7 @@ class MediaController extends Controller
     }
 
 
-    private function validateAPIKey($apiKey)
+    private function validateAPIKey(String $apiKey) : Bool
     {
         $resultKeysObj = ApiKeys::where("endpoint", "/upload/media")->get();
         foreach ($resultKeysObj as $keyObj){
