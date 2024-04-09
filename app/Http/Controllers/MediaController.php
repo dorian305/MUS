@@ -18,13 +18,13 @@ class MediaController extends Controller
     private $filesSuccessfullyUploaded = [];
     private $filesUnsuccessfullyUploaded = [];
     private $allowedFileTypes = [
-        'jpeg', 'jpg', 'png', 'gif', // Image extensions
-        'mp4', 'avi', 'mov', 'mkv',  // Video extensions
+        "jpeg", "jpg", "png", "gif", // Image extensions
+        "mp4", "avi", "mov", "mkv",  // Video extensions
     ];
     private $validationRules = [
-        'title'         =>  'required',
-        'description'   =>  'required',
-        'file'          =>  'required',
+        'title'         =>  "required",
+        'description'   =>  "required",
+        'file'          =>  "required",
     ];
 
 
@@ -48,7 +48,7 @@ class MediaController extends Controller
 
     private function validateAPIKey($apiKey)
     {
-        $resultKeysObj = ApiKeys::where('endpoint', "/upload/media")->get();
+        $resultKeysObj = ApiKeys::where("endpoint", "/upload/media")->get();
         foreach ($resultKeysObj as $keyObj){
             if (Hash::check($apiKey, $keyObj->key)) return true;
         }
@@ -90,7 +90,7 @@ class MediaController extends Controller
             $fileName = $file->getClientOriginalName();
             $fileSize = $file->getSize(); // Size is in bytes
             $fileMime = $file->getMimeType();
-            $fileType = explode('/', $fileMime)[1];
+            $fileType = explode("/", $fileMime)[1];
 
             $fileHasUnsupportedFileType = !in_array($fileType, $this->allowedFileTypes);
             if ($fileHasUnsupportedFileType){

@@ -33,7 +33,7 @@
         })
         .then(response => response.json())
         .then(data => {
-            apiKey = data['key'];
+            apiKey = data.key;
         });
 
         const uploadMedia = function(){

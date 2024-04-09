@@ -10,8 +10,8 @@ class ApiKeys extends Model
     use HasFactory;
 
     protected $fillable = [
-        'key',
-        'endpoint',
+        "key",
+        "endpoint",
     ];
 
     public $timestamps = false;

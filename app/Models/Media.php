@@ -10,11 +10,11 @@ class Media extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title',
-        'description',
-        'file_type',
-        'file_size',
-        'file_path',
+        "title",
+        "description",
+        "file_type",
+        "file_size",
+        "file_path",
     ];
 
     public $timestamps = false;
