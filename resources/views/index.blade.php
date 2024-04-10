@@ -26,7 +26,7 @@
     </form>
 
     <script>
-        let apiKey = "3df3b40d4b990af768dd176a3262f2df8c1dadce7797988ba8d0c82b684f98667ec8fa99a31784be4399f5e5dae4980fb3ee";
+        let apiKey = "97426dc81a85b45954437691e41f01c51cd6934feafb8afdcd8732b90aedd831bde8e08bf721fb7250fe0e0e3ba8db78eb6f";
 
         const uploadMedia = function(){
             const form = document.querySelector("#uploadForm");

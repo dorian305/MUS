@@ -2,48 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ApiKeys;
 use App\Models\Media;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\UploadedFile;
 use App\Services\ValidateAPIKey;
+use App\Services\MediaUpload;
+use App\Services\ValidateRequest;
 
 class MediaController extends Controller
 {
-    private $uploadDir = "media";
-    private $filesSuccessfullyUploaded = [];
-    private $filesUnsuccessfullyUploaded = [];
-    private $allowedFileTypes = [
+    private Array $filesSuccessfullyUploaded = [];
+    private Array $filesUnsuccessfullyUploaded = [];
+    private String $uploadDir = "media";
+    private Array $allowedFileTypes = [
         "jpeg", "jpg", "png", "gif", // Image extensions
         "mp4", "avi", "mov", "mkv",  // Video extensions
     ];
-    private $validationRules = [
+    private Array $expectedData = [
         'title'         =>  "required",
         'description'   =>  "required",
         'file'          =>  "required",
     ];
-
-
-
-    private function validateRequest(Array $data) : Array
-    {
-        $details = [
-            'status'    =>  "success",
-            'errors'    =>  [],
-        ];
-        $validator = Validator::make($data, $this->validationRules);
-
-        if ($validator->fails()){
-            $details['status'] = "error";
-            $details['errors'] = $validator->errors();
-        }
-
-        return $details;
-    }
 
 
     public function upload(Request $request) : JsonResponse
@@ -51,7 +31,6 @@ class MediaController extends Controller
         // Retrieve all data from the request
         $data = $request->all();
 
-        // Validate API Key
         $validKey = ValidateAPIKey::validate($request->header('apiKey'), "api/upload/media");
         if (!$validKey){
             $returnData = [
@@ -61,9 +40,8 @@ class MediaController extends Controller
             return response()->json($returnData, 403);
         }
 
-        // Validate required parameters
-        $validationDetails = $this->validateRequest($data);
-        if ($validationDetails['status'] === "error"){
+        $validationDetails = ValidateRequest::validateData($data, $this->expectedData);
+        if ($validationDetails['success'] === false){
             $returnData = [
                 'message'   =>  "Invalid data.",
                 'errors'    =>  $validationDetails['errors'],
@@ -75,82 +53,83 @@ class MediaController extends Controller
 
         // Iterate over each uploaded file
         foreach ($request->file('file') as $file){
-            $fileName = $file->getClientOriginalName();
-            $fileSize = $file->getSize(); // Size is in bytes
-            $fileMime = $file->getMimeType();
-            $fileType = explode("/", $fileMime)[1];
+            $fileData = $this->getFileData($file);
 
-            $fileHasUnsupportedFileType = !in_array($fileType, $this->allowedFileTypes);
+            $fileHasUnsupportedFileType = !in_array($fileData['type'], $this->allowedFileTypes);
             if ($fileHasUnsupportedFileType){
-                $fileData = [
-                    'fileName'  =>  $fileName,
-                    'fileType'  =>  $fileType,
-                    'error'     =>  "Unsupported file type!",
-                ];
+                array_push($this->filesUnsuccessfullyUploaded, [
+                    'name'  =>  $fileData['name'],
+                    'type'  =>  $fileData['type'],
+                    'error' =>  "Unsupported file type!",
+                ]);
 
-                array_push($this->filesUnsuccessfullyUploaded, $fileData);
                 continue;
             };
 
+            $uploadResult = MediaUpload::uploadFile($file, $this->uploadDir, $this->allowedFileTypes);
+            if ($uploadResult['success'] === false){
+                array_push($this->filesUnsuccessfullyUploaded, [
+                    'name'  => $fileData['name'],
+                    'error' => $uploadResult['error'],
+                ]);
 
-            // Save the uploaded file to the directory and store information about the file
-            // into the database
-            try {
-                $pathToTheFile = $this->storeFile($file);
-
-                $newMedia = new Media();
-                $newMedia->title =          $data['title'];
-                $newMedia->description =    $data['description'];
-                $newMedia->file_type =      $fileType;
-                $newMedia->file_size =      $fileSize;
-                $newMedia->file_path =      $pathToTheFile;
-                $newMedia->save();
-
-                $fileData = [
-                    'fileName' => $fileName,
-                    'fileType' => $fileType,
-                    'fileSize' => $fileSize,
-                    'filePath' => $pathToTheFile,
-                ];
-
-                array_push($this->filesSuccessfullyUploaded, $fileData);
+                continue;
             }
 
-            catch (Exception $e) {
-                $fileData = [
-                    'fileName'  =>  $fileName,
-                    'error'     =>  "An error occured while trying to upload the file: {$e->getMessage()}",
-                ];
+            $this->saveFileDataToDatabase($data['title'], $data['description'], $fileData['type'], $fileData['size'], $uploadResult['fullPath']);
 
-                array_push($this->filesUnsuccessfullyUploaded, $fileData);
-            }
+            $fileData['path'] = $uploadResult['fullPath'];
+            array_push($this->filesSuccessfullyUploaded, $fileData);
         }
 
-        $returnData = [
-            'filesUploaded'     => $this->filesSuccessfullyUploaded,
-            'filesNotUploaded'  => $this->filesUnsuccessfullyUploaded,
-        ];
-        if (count($this->filesUnsuccessfullyUploaded) > 0){
-            $returnData['error'] = "Some files couldn't be uploaded. Please check 'filesNotUploaded' for more information.";
-        }
 
-        else {
-            $returnData['message'] = "Files uploaded successfully.";
-        }
+        $response = $this->constructResponse();
 
         return new JsonResponse(
-            data: $returnData,
+            data: $response,
             status: 200,
         );
     }
 
 
-    private function storeFile($file) : String
+    private function getFileData(UploadedFile $file) : Array
     {
-        $baseUrl = request()->getSchemeAndHttpHost();
-        $filePath = Storage::disk('local')->putFile($this->uploadDir, $file);
-        $fullPath = "{$baseUrl}/storage/{$filePath}";
+        $data = [
+            'name'  => $file->getClientOriginalName(),
+            'type'  => explode("/", $file->getMimeType())[1],
+            'size'  => $file->getSize(), // Size is in bytes
+            'mime'  => $file->getMimeType(),
+        ];
+        
+        return $data;
+    }
 
-        return $fullPath;
+
+    private function saveFileDataToDatabase(String $title, String $description, String $type, Int $size, String $path) : void
+    {
+        $newMedia = new Media();
+        $newMedia->title =          $title;
+        $newMedia->description =    $description;
+        $newMedia->file_type =      $type;
+        $newMedia->file_size =      $size;
+        $newMedia->file_path =      $path;
+
+        $newMedia->save();
+    }
+
+
+    private function constructResponse() : Array
+    {
+        $response = [];
+
+        $response['filesUploaded'] = $this->filesSuccessfullyUploaded;
+        $response['filesNotUploaded'] = $this->filesUnsuccessfullyUploaded;
+
+        $someFilesWereNotUploaded = count($this->filesUnsuccessfullyUploaded) > 0;
+        $someFilesWereNotUploaded ?
+        $response['error'] = "Some files couldn't be uploaded. Please check 'filesNotUploaded' for more information." :
+        $response['message'] = "Files uploaded successfully.";
+
+        return $response;
     }
 }
