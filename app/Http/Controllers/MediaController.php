@@ -147,8 +147,9 @@ class MediaController extends Controller
 
     private function storeFile($file) : String
     {
+        $baseUrl = request()->getSchemeAndHttpHost();
         $filePath = Storage::disk('local')->putFile($this->uploadDir, $file);
-        $fullPath = "storage/{$filePath}";
+        $fullPath = "{$baseUrl}/storage/{$filePath}";
 
         return $fullPath;
     }
