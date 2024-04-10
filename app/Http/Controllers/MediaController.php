@@ -37,7 +37,10 @@ class MediaController extends Controller
                 'error' => "Invalid key provided.",
             ];
     
-            return response()->json($returnData, 403);
+            return new JsonResponse(
+                data: $returnData,
+                status: 403,
+            );
         }
 
         $validationDetails = ValidateRequest::validateData($data, $this->expectedData);
@@ -46,8 +49,11 @@ class MediaController extends Controller
                 'message'   =>  "Invalid data.",
                 'errors'    =>  $validationDetails['errors'],
             ];
-    
-            return response()->json($returnData, 422);
+
+            return new JsonResponse(
+                data: $returnData,
+                status: 422,
+            );
         }
 
 

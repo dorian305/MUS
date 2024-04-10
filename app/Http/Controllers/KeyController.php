@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ApiKeys;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 
 class KeyController extends Controller
@@ -20,8 +21,9 @@ class KeyController extends Controller
         $newKey->endpoint = "api/upload/media";
         $newKey->save();
 
-        return response()->json([
-            'key' => $key,
-        ]);
+        return new JsonResponse(
+            data: ['key' => $key],
+            status: 200,
+        );
     }
 }
