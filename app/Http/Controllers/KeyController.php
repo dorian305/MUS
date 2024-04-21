@@ -22,7 +22,7 @@ class KeyController extends Controller
         $newKey->save();
 
         return new JsonResponse(
-            data: ['key' => $key],
+            data: ['apiKey' => $key],
             status: 200,
         );
     }
