@@ -20,6 +20,7 @@ class MediaController extends Controller
         "mp4", "avi", "mov", "mkv",  // Video extensions
     ];
     private Array $expectedData = [
+        'apiKey'        =>  "required",
         'title'         =>  "required",
         'description'   =>  "required",
         'file'          =>  "required",
@@ -30,18 +31,7 @@ class MediaController extends Controller
     {
         // Retrieve all data from the request
         $data = $request->all();
-
-        $validKey = ValidateAPIKey::validate($request->header('apiKey'), "api/upload/media");
-        if (!$validKey){
-            $returnData = [
-                'error' => "Invalid key provided.",
-            ];
-    
-            return new JsonResponse(
-                data: $returnData,
-                status: 403,
-            );
-        }
+        $data['apiKey'] = $request->header('apiKey');
 
         $validationDetails = ValidateRequest::validateData($data, $this->expectedData);
         if ($validationDetails['success'] === false){
@@ -56,6 +46,17 @@ class MediaController extends Controller
             );
         }
 
+        $validKey = ValidateAPIKey::validate($data['apiKey'], "api/upload/media");
+        if (!$validKey){
+            $returnData = [
+                'error' => "Invalid key provided.",
+            ];
+    
+            return new JsonResponse(
+                data: $returnData,
+                status: 403,
+            );
+        }
 
         // Iterate over each uploaded file
         foreach ($request->file('file') as $file){
