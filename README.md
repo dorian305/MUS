@@ -65,7 +65,7 @@ fetch('/upload/generatekey', {
 
 
 
-### How to upload media
+## How to upload media
 - Obtain a valid API key from the endpoint above.
 - Construct a `multipart/form-data` form with the required parameters as inputs.
 - Make a POST request to the `api/upload/media` endpoint using javascript and make sure to attach the API key to the head of the request.
