@@ -3,12 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Media;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\UploadedFile;
+use App\Http\Requests\UploadPostRequest;
 use App\Services\ValidateAPIKey;
 use App\Services\MediaUpload;
-use App\Services\ValidateRequest;
 
 class MediaController extends Controller
 {
@@ -19,32 +18,11 @@ class MediaController extends Controller
         "jpeg", "jpg", "png", "gif", // Image extensions
         "mp4", "avi", "mov", "mkv",  // Video extensions
     ];
-    private Array $expectedData = [
-        'apiKey'        =>  "required",
-        'title'         =>  "required",
-        'description'   =>  "required",
-        'file'          =>  "required",
-    ];
 
-
-    public function upload(Request $request) : JsonResponse
+    public function upload(UploadPostRequest $request) : JsonResponse
     {
         // Retrieve all data from the request
         $data = $request->all();
-        $data['apiKey'] = $request->header('apiKey');
-
-        $validationDetails = ValidateRequest::validateData($data, $this->expectedData);
-        if ($validationDetails['success'] === false){
-            $returnData = [
-                'message'   =>  "Invalid data.",
-                'errors'    =>  $validationDetails['errors'],
-            ];
-
-            return new JsonResponse(
-                data: $returnData,
-                status: 422,
-            );
-        }
 
         $validKey = ValidateAPIKey::validate($data['apiKey'], "api/upload/media");
         if (!$validKey){
