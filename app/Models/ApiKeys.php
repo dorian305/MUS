@@ -11,6 +11,7 @@ class ApiKeys extends Model
 
     protected $fillable = [
         "key",
+        "ip",
         "endpoint",
     ];
 

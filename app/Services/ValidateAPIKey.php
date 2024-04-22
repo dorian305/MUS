@@ -7,18 +7,13 @@ use Illuminate\Support\Facades\Hash;
 
 class ValidateAPIKey
 {
-    public static function validate(String $apiKey, String $endpoint): Bool
+    public static function validate(String $apiKey, String $endpoint, String $ip): Bool
     {
-        $hashedKeys = ApiKeys::where('endpoint', $endpoint)
-                                ->pluck('key')
-                                ->toArray();
-        
-        foreach ($hashedKeys as $hashedKey){
-            if (Hash::check($apiKey, $hashedKey)){
-                return true;
-            }
-        }
-        
-        return false;
+        $key_db = ApiKeys::where('endpoint', $endpoint)
+                            ->where("ip", $ip)
+                            ->pluck('key')
+                            ->first();
+
+        return Hash::check($apiKey, $key_db);
     }
 }

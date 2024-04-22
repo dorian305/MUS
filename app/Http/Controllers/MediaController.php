@@ -6,8 +6,8 @@ use App\Models\Media;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\UploadedFile;
 use App\Http\Requests\UploadPostRequest;
-use App\Services\ValidateAPIKey;
 use App\Services\MediaUpload;
+use App\Services\ValidateAPIKey;
 
 class MediaController extends Controller
 {
@@ -21,21 +21,17 @@ class MediaController extends Controller
 
     public function upload(UploadPostRequest $request) : JsonResponse
     {
+        
         // Retrieve all data from the request
         $data = $request->all();
 
-        $validKey = ValidateAPIKey::validate($data['apiKey'], "api/upload/media");
-        if (!$validKey){
-            $returnData = [
-                'error' => "Invalid key provided.",
-            ];
-    
+        if (!ValidateAPIKey::validate($data['apiKey'], "api/upload/media", $request->ip())){
             return new JsonResponse(
-                data: $returnData,
+                data: ['message' => "Invalid key provided."],
                 status: 403,
             );
         }
-
+        
         // Iterate over each uploaded file
         foreach ($request->file('file') as $file){
             $fileData = $this->getFileData($file);
