@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\ApiKeys;
+use App\Models\ApiKey;
 use Illuminate\Support\Facades\Hash;
 
 class ValidateAPIKey
