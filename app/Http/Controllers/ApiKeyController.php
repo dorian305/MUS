@@ -7,7 +7,7 @@ use Illuminate\Http\JsonResponse;
 
 use App\Services\ApiKeyService;
 
-class KeyController extends Controller
+class ApiKeyController extends Controller
 {
     public function index(Request $request)
     {
