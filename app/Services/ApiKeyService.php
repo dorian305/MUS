@@ -28,4 +28,13 @@ class ApiKeyService
 
         return $key;
     }
+
+    public static function validate(String $ip, String $api_key): Bool
+    {
+        $api_key_db = ApiKey::where("ip", $ip)
+                    ->pluck('key')
+                    ->first();
+
+        return Hash::check($api_key, $api_key_db);
+    }
 }
