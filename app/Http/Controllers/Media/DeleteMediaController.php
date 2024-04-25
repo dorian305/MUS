@@ -1,11 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Media;
 
 use App\Http\Requests\DeleteMediaRequest;
 use Illuminate\Http\JsonResponse;
 
 use App\Services\MediaService;
+
+use App\Http\Controllers\Controller;
 
 class DeleteMediaController extends Controller
 {

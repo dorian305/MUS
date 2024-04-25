@@ -1,27 +1,29 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Media;
 
 
 use Illuminate\Http\JsonResponse;
 
 use App\Services\ApiKeyService;
-use App\Services\UploadService;
+use App\Services\MediaService;
 
-use App\Http\Requests\UploadPostRequest;
+use App\Http\Controllers\Controller;
 
-class UploadController extends Controller
+use App\Http\Requests\UploadMediaRequest;
+
+class UploadMediaController extends Controller
 {
     private $api_key_service;
-    private $upload_service;
+    private $media_service;
 
-    public function __construct(ApiKeyService $api_key_service, UploadService $upload_service)
+    public function __construct(ApiKeyService $api_key_service, MediaService $media_service)
     {
         $this->api_key_service = $api_key_service;
-        $this->upload_service = $upload_service;
+        $this->media_service = $media_service;
     }
 
-    public function index(UploadPostRequest $request) : JsonResponse
+    public function index(UploadMediaRequest $request) : JsonResponse
     {
         // Store all data from the request body.
         // Check the custom request for info on what data is stored.
@@ -38,7 +40,7 @@ class UploadController extends Controller
         }
 
         // Upload the files files.
-        $response = $this->upload_service->uploadFiles($request->file("files"));
+        $response = $this->media_service->uploadFiles($request->file("files"));
 
         return new JsonResponse($response['data'], $response['status_code']);
     }
