@@ -43,5 +43,4 @@ class UploadPostRequest extends FormRequest
 
         throw new HttpResponseException($response);
     }
-
 }

@@ -3,6 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\JsonResponse;
 
 class DeleteMediaRequest extends FormRequest
 {
@@ -22,7 +25,17 @@ class DeleteMediaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => ["required", "exists:media,id"],
+            'id' => ["required", "exists:media"],
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        $response = new JsonResponse(
+            data: ["errors" => $validator->errors()],
+            status: 422,
+        );
+
+        throw new HttpResponseException($response);
     }
 }
