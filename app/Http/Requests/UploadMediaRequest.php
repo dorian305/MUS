@@ -26,8 +26,6 @@ class UploadMediaRequest extends FormRequest
     {
         return [
             'apiKey'        =>  ["required"],
-            'title'         =>  ["required"],
-            'description'   =>  ["required"],
             'files'         =>  ["required"],
         ];
     }
