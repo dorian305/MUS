@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\Storage;
 
 use App\Models\Media;
 
-class MediaUploadService
+class UploadService
 {
-    public static function uploadFiles($uploaded_files): Array
+    public function uploadFiles($uploaded_files): Array
     {
         $files = [];
         $upload_dir = "upload";

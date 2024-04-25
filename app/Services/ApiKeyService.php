@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Hash;
 
 class ApiKeyService
 {
-    public static function get(String $ip)
+    public function get(String $ip): String
     {
         // Generates a 100 character string.
         $key = bin2hex((random_bytes(50)));
@@ -29,7 +29,7 @@ class ApiKeyService
         return $key;
     }
 
-    public static function validate(String $ip, String $api_key): Bool
+    public function validate(String $ip, String $api_key): Bool
     {
         $api_key_db = ApiKey::where("ip", $ip)
                     ->pluck('key')

@@ -28,7 +28,7 @@ class UploadPostRequest extends FormRequest
             'apiKey'        =>  ["required"],
             'title'         =>  ["required"],
             'description'   =>  ["required"],
-            'files'       =>  ["required"],
+            'files'         =>  ["required"],
         ];
     }
 

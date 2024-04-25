@@ -9,9 +9,16 @@ use App\Services\ApiKeyService;
 
 class ApiKeyController extends Controller
 {
+    private $apiKeyService;
+
+    public function __construct(ApiKeyService $apiKeyService)
+    {
+        $this->apiKeyService = $apiKeyService;
+    }
+
     public function index(Request $request)
     {
-        $api_key = ApiKeyService::get($request->ip());
+        $api_key = $this->apiKeyService->get($request->ip());
 
         return new JsonResponse(
             data: ['api_key' => $api_key],
