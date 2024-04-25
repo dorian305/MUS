@@ -1,4 +1,7 @@
-# Description
+# Outdated documentation, don't read.
+# Will be updated when I complete the project.
+
+<!-- # Description
 This document provides information on the API.
 The API is created using Laravel framework. It is a private API, requiring a valid key in order to use it.
 The key can be obtained by making a request to another endpoint.
@@ -171,4 +174,4 @@ All files failed to upload
     ],
     'error': "Some files couldn't be uploaded. Please check 'filesNotUploaded' for more information."
 }
-```
+``` -->
