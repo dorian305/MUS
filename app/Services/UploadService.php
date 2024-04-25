@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use Exception;
+
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Config;
 
 use App\Models\Media;
 
@@ -12,7 +14,7 @@ class UploadService
     public function uploadFiles($uploaded_files): Array
     {
         $files = [];
-        $upload_dir = "upload";
+        $upload_dir = Config::get("upload.directory");
         $allowed_file_types = [
             "jpeg", "jpg", "png", "gif", // Image extensions
             "mp4", "avi", "mov", "mkv",  // Video extensions

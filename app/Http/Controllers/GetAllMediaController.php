@@ -9,7 +9,7 @@ use App\Http\Resources\MediaCollection;
 
 class GetAllMediaController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): MediaCollection
     {
         return new MediaCollection(Media::all());
     }
