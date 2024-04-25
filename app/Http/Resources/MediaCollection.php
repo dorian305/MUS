@@ -14,6 +14,9 @@ class MediaCollection extends ResourceCollection
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'number_of_items'   => $this->collection->count(),
+            'data'              => $this->collection,
+        ];
     }
 }
