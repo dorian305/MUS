@@ -27,8 +27,8 @@ class PasswordMatchesRule implements ValidationRule
                     ->orWhere("email", $this->data['identifier'])
                     ->first();
 
-        if (!Hash::check($value, $user->password)) {
-            $fail("Invalid password provided.");
+        if (!$user || !Hash::check($value, $user->password)) {
+            $fail("Invalid credentials provided.");
         }
     }
 }

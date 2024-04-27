@@ -24,7 +24,8 @@ class UserController extends Controller
 
         $user = $this->user_service->register(
             $request_data['username'],
-            $request_data['password'],
+            $request_data['passwrd'],
+            $request_data['passwrd_confirmation'],
             $request_data['email'],
         );
 

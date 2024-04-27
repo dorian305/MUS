@@ -19,7 +19,12 @@ class UserService
                     ->exists();
     }
 
-    public function register(String $username, String $password, String $email): User
+    public function register(
+        String $username,
+        String $password,
+        String $password_confirmation,
+        String $email
+    ): User
     {
         $user = User::create([
             'username'  => $username,

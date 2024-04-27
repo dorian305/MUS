@@ -16,7 +16,7 @@ class IdentifierExistsRule implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if (!User::where("username", $value)->orWHere("email", $value)->exists()) {
-            $fail("Invalid username or email provided.");
+            $fail("Invalid credentials provided.");
         }
     }
 }
