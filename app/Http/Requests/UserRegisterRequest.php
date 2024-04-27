@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 
-class UploadMediaRequest extends FormRequest
+class UserRegisterRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,11 +25,11 @@ class UploadMediaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'apiKey'        =>  ["required"],
-            'files'         =>  ["required"],
+            'username'  =>  ["required", "string", "min:4", "max:10", "unique:users,username"],
+            'password'  =>  ["required"],
+            'email'     =>  ["required", "string", "email", "unique:users,email"],
         ];
     }
-
 
     protected function failedValidation(Validator $validator)
     {
