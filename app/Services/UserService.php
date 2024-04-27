@@ -17,4 +17,18 @@ class UserService
 
         return $user;
     }
+
+    public function login(String $identifier, String $password): Array
+    {
+        $user = User::where("username", $identifier)
+                    ->orWhere("email", $identifier)
+                    ->first();
+
+        $data = [
+            'user'  => $user,
+            'token' => $user->createToken($identifier),
+        ];
+
+        return $data;
+    }
 }
