@@ -23,8 +23,8 @@ class PasswordMatchesRule implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $user = User::where("username", $this->data['identifier'])
-                    ->orWhere("email", $this->data['identifier'])
+        $user = User::where("username", $this->data['identifier'] ?? "")
+                    ->orWhere("email", $this->data['identifier'] ?? "")
                     ->first();
 
         if (!$user || !Hash::check($value, $user->password)) {
