@@ -48,4 +48,12 @@ class UserService
 
         return $data;
     }
+
+    public function logout(Int $id): void
+    {
+        $user = User::where("id", $id)
+                    ->first();
+
+        $user->tokens()->delete();
+    }
 }

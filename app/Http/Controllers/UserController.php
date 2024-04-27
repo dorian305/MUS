@@ -6,7 +6,7 @@ use Illuminate\Http\JsonResponse;
 
 use App\Http\Requests\UserRegisterRequest;
 use App\Http\Requests\UserLoginRequest;
-
+use Illuminate\Http\Request;
 use App\Services\UserService;
 
 class UserController extends Controller
@@ -66,5 +66,19 @@ class UserController extends Controller
         ];
         
         return new JsonResponse($response['data'], $response['status_code']);
+    }
+
+    public function logout(Request $request): JsonResponse
+    {
+        $this->user_service->logout($request->input("id"));
+
+        $response_data = [
+            'data' => [
+                'message' => "Logged out.",
+            ],
+            'status_code' => 200,
+        ];
+
+        return new JsonResponse($response_data['data'], $response_data['status_code']);
     }
 }
