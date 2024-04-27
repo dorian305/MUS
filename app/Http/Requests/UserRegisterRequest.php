@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\Rules\Password;
 
 class UserRegisterRequest extends FormRequest
 {
@@ -26,8 +27,9 @@ class UserRegisterRequest extends FormRequest
     {
         return [
             'username'  =>  ["required", "string", "min:4", "max:10", "unique:users,username"],
-            'password'  =>  ["required", "string"],
             'email'     =>  ["required", "string", "email", "unique:users,email"],
+            'passwrd'  =>  ["required", "confirmed", "string", Password::min(8)->letters()->numbers()->symbols()],
+            'passwrd_confirmation'  =>  ["required", "string", Password::min(8)->letters()->numbers()->symbols()],
         ];
     }
 
