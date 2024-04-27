@@ -21,6 +21,7 @@ class UserController extends Controller
     public function register(UserRegisterRequest $request): JsonResponse
     {
         $request_data = $request->all();
+
         $user = $this->user_service->register(
             $request_data['username'],
             $request_data['password'],
@@ -41,6 +42,11 @@ class UserController extends Controller
     public function login(UserLoginRequest $request): JsonResponse
     {
         $request_data = $request->all();
+
+        if ($this->user_service->loggedIn($request_data['identifier'])) {
+            return new JsonResponse(['message' => "Already logged in."], 409);
+        }
+
         $login_data = $this->user_service->login(
             $request_data["identifier"],
             $request_data["password"]
