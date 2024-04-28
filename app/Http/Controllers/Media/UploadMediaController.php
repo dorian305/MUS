@@ -25,21 +25,17 @@ class UploadMediaController extends Controller
 
     public function index(UploadMediaRequest $request) : JsonResponse
     {
-        // Store all data from the request body.
-        // Check the custom request for info on what data is stored.
-        $request_body = $request->all();
-
         // Invalid api key provided.
-        if (!$this->api_key_service->validate($request->ip(), $request_body['apiKey'])){
+        if (!$this->api_key_service->validate($request->user(), $request->input("apiKey"))){
             $response = [
-                'data'          =>  ['message' => "Invalid key provided."],
+                'data'          =>  ['message' => "Invalid api key provided."],
                 'status_code'   =>  403,
             ];
 
             return new JsonResponse($response['data'], $response['status_code']);
         }
 
-        // Upload the files files.
+        // Upload the files.
         $response = $this->media_service->uploadFiles($request->file("files"));
 
         return new JsonResponse($response['data'], $response['status_code']);

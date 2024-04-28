@@ -30,12 +30,12 @@ class ApiKeyService
         return $key;
     }
 
-    public function validate(String $ip, String $api_key): Bool
+    public function validate(User $user, String $api_key): Bool
     {
-        $api_key_db = ApiKey::where("ip", $ip)
+        $api_key_db = ApiKey::where("user_id", $user->id)
                     ->pluck('key')
                     ->first();
-
+        
         return Hash::check($api_key, $api_key_db);
     }
 }

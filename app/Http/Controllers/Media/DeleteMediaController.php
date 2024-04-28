@@ -21,7 +21,7 @@ class DeleteMediaController extends Controller
     public function delete(Request $request, Int $id): JsonResponse
     {
         if (!$this->media_service->mediaExists($id)){
-            return new JsonResponse(["message" => "Media with id: {$id} does not exist."], 404);
+            return new JsonResponse(['message' => "Media with id: {$id} does not exist."], 404);
         }
 
         $deleted_media = $this->media_service->delete($id);
