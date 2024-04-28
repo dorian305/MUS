@@ -3,16 +3,17 @@
 namespace App\Services;
 
 use App\Models\ApiKey;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 class ApiKeyService
 {
-    public function get(String $ip): String
+    public function get(User $user): String
     {
         // Generates a 100 character string.
         $key = bin2hex((random_bytes(50)));
 
-        $existing_api_key = ApiKey::where("ip", $ip)
+        $existing_api_key = ApiKey::where("user_id", $user->id)
                             ->get()
                             ->first();
         if ($existing_api_key){
@@ -22,7 +23,7 @@ class ApiKeyService
         }
 
         $new_api_key = new ApiKey();
-        $new_api_key->ip = $ip;
+        $new_api_key->user_id = $user->id;
         $new_api_key->key = Hash::make($key);
         $new_api_key->save();
 

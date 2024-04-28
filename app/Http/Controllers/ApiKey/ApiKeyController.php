@@ -20,7 +20,7 @@ class ApiKeyController extends Controller
 
     public function index(Request $request)
     {
-        $api_key = $this->apiKeyService->get($request->ip());
+        $api_key = $this->apiKeyService->get($request->user());
 
         return new JsonResponse(
             data: ['api_key' => $api_key],
