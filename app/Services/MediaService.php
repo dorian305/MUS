@@ -100,4 +100,9 @@ class MediaService
         return $media;
     }
 
+    public function mediaExists(Int $id): Bool
+    {
+        return Media::where("id", $id)
+                    ->exists();
+    }
 }

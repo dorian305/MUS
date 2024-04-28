@@ -29,6 +29,6 @@ Route::get("/media-get/{id}", [GetMediaController::class, "index"])
 Route::get("/media-all", [GetAllMediaController::class, "index"])
     ->middleware("auth:sanctum");
 Route::delete("/media-delete/{id}", [DeleteMediaController::class, "delete"])
-    ->middleware("media-delete");
+    ->middleware("auth:sanctum");
 Route::post("/media-upload", [UploadMediaController::class, "index"])
     ->middleware("auth:sanctum");

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Media;
 
-use App\Http\Requests\DeleteMediaRequest;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 use App\Services\MediaService;
 
@@ -18,9 +18,12 @@ class DeleteMediaController extends Controller
         $this->media_service = $media_service;
     }
 
-    public function index(DeleteMediaRequest $request): JsonResponse
+    public function delete(Request $request, Int $id): JsonResponse
     {
-        $id = $request->input("id");
+        if (!$this->media_service->mediaExists($id)){
+            return new JsonResponse(["message" => "Media with id: {$id} does not exist."], 404);
+        }
+
         $deleted_media = $this->media_service->delete($id);
         $response = [
             'data' => [
