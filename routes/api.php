@@ -10,17 +10,25 @@ use App\Http\Controllers\Media\GetMediaController;
 use App\Http\Controllers\Media\GetAllMediaController;
 
 // Authentication.
-Route::post("/user-register",   [UserController::class, "register"]);
-Route::post("/user-login",      [UserController::class, "login"]);
-Route::post("/user-logout",     [UserController::class, "logout"])
+Route::post("/user-register", [UserController::class, "register"]);
+Route::post("/user-login", [UserController::class, "login"]);
+Route::post("/user-logout", [UserController::class, "logout"])
     ->middleware("auth:sanctum");
 
-// Api key generation.
+// Token generation (To do).
+// Route::get("token-refresh",     [RefreshTokenController::class, "index"])
+//     ->middleware("auth:sanctum");
+
+// Api key.
 Route::get("/apikey-get", [ApiKeyController::class, "index"])
     ->middleware("auth:sanctum");
 
-// Media 
-Route::get("/media-get/{id}",   [GetMediaController::class, "index"]);
-Route::get("/media-all",        [GetAllMediaController::class, "index"]);
-Route::post("/media-delete",    [DeleteMediaController::class, "index"]);
-Route::post("/media-upload",    [UploadMediaController::class, "index"]);
+// Media.
+Route::get("/media-get/{id}", [GetMediaController::class, "index"])
+    ->middleware("auth:sanctum");
+Route::get("/media-all", [GetAllMediaController::class, "index"])
+    ->middleware("auth:sanctum");
+Route::delete("/media-delete/{id}", [DeleteMediaController::class, "delete"])
+    ->middleware("media-delete");
+Route::post("/media-upload", [UploadMediaController::class, "index"])
+    ->middleware("auth:sanctum");
