@@ -15,10 +15,6 @@ Route::post("/user-login", [UserController::class, "login"]);
 Route::post("/user-logout", [UserController::class, "logout"])
     ->middleware("auth:sanctum");
 
-// Token generation (To do).
-// Route::get("token-refresh",     [RefreshTokenController::class, "index"])
-//     ->middleware("auth:sanctum");
-
 // Api key.
 Route::get("/apikey-get", [ApiKeyController::class, "index"])
     ->middleware("auth:sanctum");
