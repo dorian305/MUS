@@ -5,9 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Livewire\LoginPage;
 
-Route::get('/', function () {
-    return view('index');
-})->middleware("auth:sanctum");
+Route::get('/', LoginPage::class);
 
 // Login and register pages.
 Route::get("/login", LoginPage::class);

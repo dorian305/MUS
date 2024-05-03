@@ -1,5 +1,5 @@
 <div class="container-fluid min-vh-100 d-flex justify-content-center align-items-center">
-    <div class="p-5 shadow-lg rounded">
+    <div class="p-5 shadow-lg rounded" id="login-element">
         <h1 class="text-center mb-4">Login</h1>
         
         <form>
@@ -11,13 +11,18 @@
             </div>
             <button type="button" id="submit" class="btn btn-primary btn-block">Login</button>
         </form>
+
+        <p class="mt-3">Don't have an account? <a href="/register">Create one</a></p>
     </div>
 </div>
 
 <script>
+    const loginElem = document.querySelector("#login-element");
     const btn = document.querySelector("#submit");
 
     btn.onclick = async e => {
+        loginElem.classList.toggle("opacity-25");
+
         const identifier = document.querySelector("#identifier").value;
         const password = document.querySelector("#password").value;
 
@@ -33,5 +38,13 @@
             },
             body: JSON.stringify(data),
         });
+
+        if (response.ok){
+            alert("login successfull");
+        }
+        
+        else {
+            loginElem.classList.toggle("opacity-25");
+        }
     }
 </script>
