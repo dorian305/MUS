@@ -1,5 +1,5 @@
 <div class="container-fluid min-vh-100 d-flex justify-content-center align-items-center">
-    <div class="p-5 shadow-lg rounded">
+    <div class="p-5 shadow-lg rounded" id="registration-element">
         <h1 class="text-center mb-4">Register</h1>
         
         <form>
@@ -17,13 +17,17 @@
             </div>
             <button type="button" id="submit" class="btn btn-primary btn-block">Register</button>
         </form>
+        <p class="mt-3">Already have an account? <a href="/login">Login</a></p>
     </div>
 </div>
 
 <script>
+    const registrationElem = document.querySelector("#registration-element");
     const btn = document.querySelector("#submit");
 
     btn.onclick = async e => {
+        registrationElem.classList.toggle("opacity-25");
+
         const username = document.querySelector("#username").value;
         const email = document.querySelector("#email").value;
         const passwrd = document.querySelector("#passwrd").value;
@@ -43,5 +47,13 @@
             },
             body: JSON.stringify(data),
         });
+
+        if (response.ok){
+            alert("Registration successfull");
+        }
+
+        else {
+            registrationElem.classList.toggle("opacity-25");
+        }
     }
 </script>
