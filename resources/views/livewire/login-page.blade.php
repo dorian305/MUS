@@ -17,11 +17,10 @@
 </div>
 
 <script>
-    const loginElem = document.querySelector("#login-element");
-    const btn = document.querySelector("#submit");
+    const componentInner = document.querySelector("#component-inner");
 
-    btn.onclick = async e => {
-        loginElem.classList.toggle("opacity-25");
+    document.querySelector("#submit").onclick = async e => {
+        componentInner.classList.toggle("opacity-25");
 
         const identifier = document.querySelector("#identifier").value;
         const password = document.querySelector("#password").value;
@@ -44,7 +43,9 @@
         }
         
         else {
-            loginElem.classList.toggle("opacity-25");
+            const data = await response.json();
+            console.log(data);
+            componentInner.classList.toggle("opacity-25");
         }
     }
 </script>
