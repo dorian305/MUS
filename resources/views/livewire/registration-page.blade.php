@@ -1,5 +1,5 @@
 <div class="container-fluid min-vh-100 d-flex justify-content-center align-items-center">
-    <div class="p-5 shadow-lg rounded" id="registration-element">
+    <div class="p-5 shadow-lg rounded" id="component-inner">
         <h1 class="text-center mb-4">Register</h1>
         
         <form>
