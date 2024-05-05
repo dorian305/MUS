@@ -17,8 +17,6 @@
 </div>
 
 <script>
-    const componentInner = document.querySelector("#component-inner");
-
     document.querySelector("#submit").onclick = async e => {
         toggleClass(componentInner, "opacity-25");
 
@@ -32,6 +30,9 @@
             });
 
             // Login user
+            window.location.href = "/dashboard";
+
+            
         } catch (res) {
             const data = res.response.data;
             console.log(data);

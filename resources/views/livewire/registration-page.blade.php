@@ -22,38 +22,45 @@
 </div>
 
 <script>
-    const registrationElem = document.querySelector("#registration-element");
     const btn = document.querySelector("#submit");
 
-    btn.onclick = async e => {
-        registrationElem.classList.toggle("opacity-25");
+    document.querySelector("#submit").onclick = async e => {
+        toggleClass(componentInner, "opacity-25");
 
-        const username = document.querySelector("#username").value;
-        const email = document.querySelector("#email").value;
-        const passwrd = document.querySelector("#passwrd").value;
-        const passwrd_confirmation = document.querySelector("#passwrd_confirmation").value;
+        // Change form elements to read only
+        formReadOnly(true);
 
-        const data = {
-            username: username,
-            email: email,
-            passwrd: passwrd,
-            passwrd_confirmation: passwrd_confirmation,
-        };
+        try {
+            const response = await axios.post("/api/user-login", {
+                username: document.querySelector("#username").value,
+                email: document.querySelector("#email").value,
+                passwrd: document.querySelector("#passwrd").value,
+                passwrd_confirmation: document.querySelector("#passwrd_confirmation").value,
+            });
 
-        const response = await fetch("/api/user-register", {
-            method: "POST",
-            headers: {
-                'Content-Type': "application/json",
-            },
-            body: JSON.stringify(data),
-        });
+            // Registration success, redirect to dashboard
+            window.location.href = "/dashboard";
 
-        if (response.ok){
-            alert("Registration successfull");
-        }
+            
+        } catch (res) {
+            const data = res.response.data;
+            console.log(data);
 
-        else {
-            registrationElem.classList.toggle("opacity-25");
+            // Username or email is already taken
+            if (data.errors){
+                Swal.fire({
+                    title: "Oops",
+                    text: "It seems like the username or email you want to use is already taken.",
+                    icon: "error",
+                    confirmButtonText: "I'll try another",
+                })
+                .then(res => {
+                    toggleClass(componentInner, "opacity-25");
+                    formReadOnly(false);
+                });
+
+                return;
+            }
         }
     }
 </script>

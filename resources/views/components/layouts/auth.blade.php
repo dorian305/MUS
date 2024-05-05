@@ -20,6 +20,8 @@
         {{ $slot }}
 
         <script>
+            const componentInner = document.querySelector("#component-inner");
+            
             // Toggle class
             const toggleClass = (elem, classs) => elem.classList.toggle(classs);
 
