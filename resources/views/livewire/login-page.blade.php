@@ -20,37 +20,55 @@
     const componentInner = document.querySelector("#component-inner");
 
     document.querySelector("#submit").onclick = async e => {
-        componentInner.classList.toggle("opacity-25");
+        toggleClass(componentInner, "opacity-25");
 
-        const identifier = document.querySelector("#identifier").value;
-        const password = document.querySelector("#password").value;
+        // Change form elements to read only
+        formReadOnly(true);
 
-        const data = {
-            identifier: identifier,
-            password: password,
-        };
-
-        const response = await fetch("/api/user-login", {
-            method: "POST",
-            headers: {
-                'Content-Type': "application/json",
-            },
-            body: JSON.stringify(data),
-        });
-
-        if (response.ok){
-            alert("login successfull");
-        }
-        
-        else {
-            const data = await response.json();
-            Swal.fire({
-                title: 'List of Errors',
-                text: JSON.stringify(data),
-                icon: 'error',
-                confirmButtonText: 'OK'
+        try {
+            const response = await axios.post("/api/user-login", {
+                identifier: document.querySelector("#identifier").value,
+                password: document.querySelector("#password").value,
             });
-            componentInner.classList.toggle("opacity-25");
+
+            // Login user
+        } catch (res) {
+            const data = res.response.data;
+            console.log(data);
+
+            // User already logged in
+            if (data.message){
+                Swal.fire({
+                    title: "Oops",
+                    text: "It seems like you are already logged in.",
+                    icon: "error",
+                    confirmButtonText: "My bad",
+                })
+                .then(res => {
+                    toggleClass(componentInner, "opacity-25");
+                    formReadOnly(false);
+
+                    window.location.href = "/dashboard";
+                });
+
+                return;
+            }
+
+            // Incorrect credentials
+            if (data.errors){
+                Swal.fire({
+                    title: "Oops",
+                    text: "Incorrect username / email or password",
+                    icon: "error",
+                    confirmButtonText: "Let me try again",
+                })
+                .then(res => {
+                    toggleClass(componentInner, "opacity-25");
+                    formReadOnly(false);
+                });
+
+                return;
+            }
         }
     }
 </script>

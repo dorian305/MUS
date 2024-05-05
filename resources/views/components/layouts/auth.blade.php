@@ -11,9 +11,24 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.css">
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.all.min.js"></script>
 
+        <!-- Axios -->
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
         <title>{{ $title ?? 'Page Title' }}</title>
     </head>
     <body>
         {{ $slot }}
+
+        <script>
+            // Toggle class
+            const toggleClass = (elem, classs) => elem.classList.toggle(classs);
+
+            // Toggle form element read only state
+            const formReadOnly = state => {
+                document.querySelectorAll("form input, form select, form textarea, form button").forEach(element => {
+                    element.disabled = state;
+                });
+            }
+        </script>
     </body>
 </html>
