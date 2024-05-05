@@ -44,7 +44,12 @@
         
         else {
             const data = await response.json();
-            console.log(data);
+            Swal.fire({
+                title: 'List of Errors',
+                text: JSON.stringify(data),
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
             componentInner.classList.toggle("opacity-25");
         }
     }
