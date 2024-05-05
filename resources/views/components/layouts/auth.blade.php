@@ -31,6 +31,11 @@
                     element.disabled = state;
                 });
             }
+
+            // Check if any of the form inputs are not populated
+            const incompleteFormData = data => {
+                return Object.values(data).some(value => value.trim() === "");
+            }
         </script>
     </body>
 </html>
