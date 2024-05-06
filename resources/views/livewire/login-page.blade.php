@@ -37,31 +37,13 @@
             const data = res.response.data;
             console.log(data);
 
-            // User already logged in
-            if (data.message){
-                Swal.fire({
-                    title: "Oops",
-                    text: "It seems like you are already logged in.",
-                    icon: "error",
-                    confirmButtonText: "My bad",
-                })
-                .then(res => {
-                    toggleClass(componentInner, "opacity-25");
-                    formReadOnly(false);
-
-                    window.location.href = "/dashboard";
-                });
-
-                return;
-            }
-
-            // Incorrect credentials
+            
             if (data.errors){
                 Swal.fire({
-                    title: "Oops",
-                    text: "Incorrect username / email or password",
+                    title: "Errors encountered",
+                    html: generateDescriptionList(data.errors),
                     icon: "error",
-                    confirmButtonText: "Let me try again",
+                    confirmButtonText: "Let me correct that",
                 })
                 .then(res => {
                     toggleClass(componentInner, "opacity-25");

@@ -36,6 +36,37 @@
             const incompleteFormData = data => {
                 return Object.values(data).some(value => value.trim() === "");
             }
+
+            // Build a description list for the nice error display
+            const generateDescriptionList = errorObj => {
+                const dl = document.createElement("dl");
+                dl.classList.add("row");
+
+                Object.entries(errorObj).forEach(([errorName, errors]) => {
+                    const dt = document.createElement("dt");
+
+                    dt.classList.add("col-sm-3", "text-start");
+                    dt.textContent = errorName.charAt(0).toUpperCase() + errorName.slice(1);
+                    dl.appendChild(dt);
+
+                    const dd = document.createElement("dd");
+                    dd.classList.add("col-sm-9", "text-end");
+                    errors.forEach(error => {
+                        const errorText = document.createElement("p");
+                        
+                        errorText.textContent = error;
+                        dd.appendChild(errorText);
+                    });
+
+                    dl.appendChild(dd);
+                });
+
+                return dl;
+            }
+
+
+
+
         </script>
     </body>
 </html>

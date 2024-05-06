@@ -62,17 +62,18 @@
 
             // Registration success
             window.location.href = "/dashboard";
+
+
         } catch (res) {
             const data = res.response.data;
             console.log(data);
 
-            // Username or email is already taken
             if (data.errors){
                 Swal.fire({
-                    title: "Oops",
-                    text: "It seems like the username or email you want to use is already taken.",
+                    title: "Encountered errors",
+                    html: generateDescriptionList(data.errors),
                     icon: "error",
-                    confirmButtonText: "I'll try another",
+                    confirmButtonText: "Let me correct that",
                 })
                 .then(res => {
                     toggleClass(componentInner, "opacity-25");
