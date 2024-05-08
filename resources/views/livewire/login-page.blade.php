@@ -29,7 +29,8 @@
                 password: document.querySelector("#password").value,
             });
 
-            // Login user
+            // Login success
+            
             window.location.href = "/dashboard";
 
             

@@ -61,7 +61,7 @@
             const response = await axios.post("/api/user-register", requestData);
 
             // Registration success
-            window.location.href = "/dashboard";
+            window.location.href = "/login";
 
 
         } catch (res) {
