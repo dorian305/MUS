@@ -43,7 +43,7 @@
                     title: "Errors encountered",
                     html: generateDescriptionList(data.errors),
                     icon: "error",
-                    confirmButtonText: "Let me correct that",
+                    confirmButtonText: "My bad",
                 })
                 .then(res => {
                     toggleClass(componentInner, "opacity-25");
