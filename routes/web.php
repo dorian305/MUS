@@ -13,4 +13,4 @@ Route::get("/login", LoginPage::class);
 Route::get("/register", RegistrationPage::class);
 
 // Dashboard
-Route::get("/{user}/dashboard", DashboardPage::class);
+// Route::get("/dashboard", DashboardPage::class);

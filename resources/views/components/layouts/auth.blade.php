@@ -14,6 +14,9 @@
         <!-- Axios -->
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
+        <!-- Token manipulation -->
+        <script src="{{ asset("js/token.js") }}"></script>
+
         <title>{{ $title ?? 'Page Title' }}</title>
     </head>
     <body>
