@@ -12,14 +12,15 @@
                 <span class="text-danger fs-4 ms-2 mt-1">*</span>
             </div>
             <div class="mb-3 d-flex align-items-start">
-                <input type="password" name="passwrd" class="form-control border-secondary flex-grow-1" id="passwrd" placeholder="Password">
+                <input oninput="passwordCheck()" type="password" name="passwrd" class="form-control border-secondary flex-grow-1" id="passwrd" placeholder="Password">
                 <span class="text-danger fs-4 ms-2 mt-1">*</span>
             </div>
             <div class="mb-3 d-flex align-items-start">
-                <input type="password" name="passwrd_confirmation" class="form-control border-secondary flex-grow-1" id="passwrd_confirmation" placeholder="Confirm password">
+                <input oninput="passwordCheck()" type="password" name="passwrd_confirmation" class="form-control border-secondary flex-grow-1" id="passwrd_confirmation" placeholder="Confirm password">
                 <span class="text-danger fs-4 ms-2 mt-1">*</span>
+                <span id="password_error"></span>
             </div>
-            <button type="button" id="submit" class="btn btn-primary btn-block">Register</button>
+            <button type="button" id="submit" class="btn btn-primary btn-block" onclick="register()">Register</button>
         </form>
         <p class="mt-3">Already have an account? <a href="/login">Login</a></p>
     </div>
@@ -27,9 +28,11 @@
 
 
 <script>
-    const btn = document.querySelector("#submit");
+    const passwordElem = document.querySelector("#passwrd");
+    const passwordConfirmationElem = document.querySelector("#passwrd_confirmation");
+    const passwordErrorElem = document.querySelector("#password_error");
 
-    document.querySelector("#submit").onclick = async e => {
+    async function register() {
         toggleClass(componentInner, "opacity-25");
 
         // Change form elements to read only
@@ -60,9 +63,18 @@
         try {
             const response = await axios.post("/api/user-register", requestData);
 
-            // Registration success
-            window.location.href = "/login";
+            Swal.fire({
+                title: "Registration success",
+                text: "Your registration has been successful.",
+                icon: "success",
+                confirmButtonText: "Let me login now",
+            })
+            .then(res => {
+                toggleClass(componentInner, "opacity-25");
 
+                // Redirect to login
+                window.location.href = "/login";
+            });
 
         } catch (res) {
             const data = res.response.data;
@@ -84,4 +96,51 @@
             }
         }
     }
+
+    function passwordCheck() {
+        const password = passwordElem.value;
+        const confirmPassword = passwordConfirmationElem.value;
+        const validations = [
+            {
+                condition: password !== confirmPassword,
+                message: 'Passwords do not match',
+                style: 'color: red;'
+            },
+            {
+                condition: password.length < 8,
+                message: 'Password must have at least 8 characters',
+                style: 'color: red;'
+            },
+            {
+                condition: !/[A-Za-z]/.test(password),
+                message: 'Password must contain at least 1 letter',
+                style: 'color: red;'
+            },
+            {
+                condition: !/\d/.test(password),
+                message: 'Password must contain at least 1 number',
+                style: 'color: red;'
+            },
+            {
+                condition: !/[@$!%*?&]/.test(password),
+                message: 'Password must contain at least 1 symbol',
+                style: 'color: red;'
+            }
+        ];
+        const error = validations.find(validation => validation.condition);
+
+        if (error) {
+            passwordErrorElem.textContent = error.message;
+            passwordErrorElem.style = error.style;
+        }
+        
+        else {
+            passwordErrorElem.textContent = 'Passwords match';
+            passwordErrorElem.style = 'color: green;';
+        }
+    }
+
+
+
+
 </script>
