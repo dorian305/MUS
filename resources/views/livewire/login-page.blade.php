@@ -31,15 +31,10 @@
 
             // Login success
             storeToken(response.data.token.token);
-            
-            // window.location.href = "/dashboard";
+            window.location.href = "/dashboard";
 
             
         } catch (res) {
-            const data = res.response.data;
-            console.log(data);
-
-            
             if (data.errors){
                 Swal.fire({
                     title: "Errors encountered",

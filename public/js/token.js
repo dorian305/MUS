@@ -7,7 +7,7 @@ const storeToken = tokenString => {
 
 // Read token from local storage.
 const getToken = () => {
-    const tokenObject = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
-    return JSON.parse(tokenObject) ?? null;
+    return token ?? null;
 }
