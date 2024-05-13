@@ -67,6 +67,10 @@
                 return dl;
             }
 
+            // Redirect user to dashboard if accessing page as logged in user
+            if (getToken()) {
+                window.location.href = "/dashboard";
+            }
         </script>
     </body>
 </html>
