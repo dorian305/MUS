@@ -44,13 +44,13 @@ class UserController extends Controller
     {
         $request_data = $request->all();
 
-        if ($this->user_service->loggedIn($request_data['identifier'])) {
-            return new JsonResponse([
-                'errors' => [
-                    'message' => ["Already logged in."],
-                ],
-            ], 409);
-        }
+        // if ($this->user_service->loggedIn($request_data['identifier'])) {
+        //     return new JsonResponse([
+        //         'errors' => [
+        //             'message' => ["Already logged in."],
+        //         ],
+        //     ], 409);
+        // }
 
         $login_data = $this->user_service->login(
             $request_data["identifier"],

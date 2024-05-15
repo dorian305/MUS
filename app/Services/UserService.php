@@ -8,16 +8,16 @@ use Illuminate\Support\Facades\Hash;
 
 class UserService
 {
-    public function loggedIn(String $identifier): Bool
-    {
-        $id = User::where("username", $identifier)
-                    ->orWhere("email", $identifier)
-                    ->pluck("id");
+    // public function loggedIn(String $identifier): Bool
+    // {
+    //     $id = User::where("username", $identifier)
+    //                 ->orWhere("email", $identifier)
+    //                 ->pluck("id");
 
-        return DB::table("personal_access_tokens")
-                    ->where("tokenable_id", $id)
-                    ->exists();
-    }
+    //     return DB::table("personal_access_tokens")
+    //                 ->where("tokenable_id", $id)
+    //                 ->exists();
+    // }
 
     public function register(
         String $username,

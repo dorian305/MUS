@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Config;
 
 class MediaService
 {
-    public function uploadFiles($uploaded_files): Array
+    public function uploadFiles($uploaded_files, $user_id): Array
     {
         $files = [];
         $upload_dir = Config::get("upload.directory");
@@ -57,6 +57,7 @@ class MediaService
                     'type' => $file_type,
                     'size' => $file_size,
                     'path' => $full_path,
+                    'user_id' => $user_id,
                 ]);
             }
 

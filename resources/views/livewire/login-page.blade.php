@@ -20,7 +20,7 @@
     document.querySelector("#submit").onclick = async e => {
         toggleClass(componentInner, "opacity-25");
 
-        // Change form elements to read only
+        // Change form elements to read-only
         formReadOnly(true);
 
         try {
@@ -31,14 +31,15 @@
 
             // Login success
             storeToken(response.data.token.token);
-            window.location.href = "/dashboard";
+            window.location.href = `/dashboard/${response.data.user.username}`;
 
-            
-        } catch (res) {
-            if (data.errors){
+        } catch (error) {
+            // If response was not successful or other error occurs
+            const { response } = error; // Extract response from error object
+            if (response && response.data.errors) {
                 Swal.fire({
                     title: "Errors encountered",
-                    html: generateDescriptionList(data.errors),
+                    html: generateDescriptionList(response.data.errors),
                     icon: "error",
                     confirmButtonText: "My bad",
                 })
@@ -49,6 +50,10 @@
 
                 return;
             }
+            // Handle other types of errors (e.g., network errors) here if needed
+            toggleClass(componentInner, "opacity-25");
+            formReadOnly(false);
         }
     }
+
 </script>

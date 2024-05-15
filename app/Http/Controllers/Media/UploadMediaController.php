@@ -36,7 +36,7 @@ class UploadMediaController extends Controller
         }
 
         // Upload the files.
-        $response = $this->media_service->uploadFiles($request->file("files"));
+        $response = $this->media_service->uploadFiles($request->file("files"), $request->input("user_id"));
 
         return new JsonResponse($response['data'], $response['status_code']);
     }
