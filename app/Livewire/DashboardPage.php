@@ -15,7 +15,6 @@ class DashboardPage extends Component
     {
         $data = [
             'user' => $this->user,
-            'all_media' => $this->user->media,
         ];
 
         return view("livewire.dashboard-page", $data)

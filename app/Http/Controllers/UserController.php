@@ -74,7 +74,7 @@ class UserController extends Controller
 
     public function logout(Request $request): JsonResponse
     {
-        $this->user_service->logout($request->input("id"));
+        $this->user_service->logout($request->input("token"));
 
         $response_data = [
             'data' => [
